@@ -1,0 +1,10 @@
+<launch>
+    <!-- <param name="v_max" type="double" value="2.0" /> -->
+    <node name="data_process" pkg="tutorial" type="data_process" output="screen">
+    </node>
+        <!-- <param name="v_max" type="double" value="5.0" /> -->
+    <node name="PID_controller" pkg="tutorial" type="PID_controller" output="screen">
+    </node>
+    <node name="debug" pkg="tutorial" type="debug" output="screen">
+    </node>
+</launch>
