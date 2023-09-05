@@ -27,7 +27,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "PID_controller");
     ros::NodeHandle nh;
     ros::Subscriber Err_sub = nh.subscribe<geometry_msgs::Twist>("error",10,Err_callback);
-    ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("cmd_vel",10);
+    ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("delta_vel",10);
     geometry_msgs::Twist velocity;
     double v_max=1;
 

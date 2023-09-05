@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     ros::Publisher pub1 = nh.advertise<std_msgs::Int8>("dir", 10);
     ros::Publisher pub2 = nh.advertise<std_msgs::Int8MultiArray>("tracker_data", 10);
-    ros::Subscriber sub1 = nh.subscribe<std_msgs::Bool>("node_detact",10,detact_callback);
+    ros::Subscriber sub1 = nh.subscribe<std_msgs::Bool>("node_detect",10,detact_callback);
     ros::Rate loop_rate(1);
     
     int number = 0;
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
         // for (size_t i = 0; i < msg2.data.size(); ++i) {
         //     ROS_INFO("msg2.data[%zu]: %d", i, msg2.data[i]);
         // }
-        ROS_INFO("node detact: %d",node_point.data);
+        ROS_INFO("node detect: %d",node_point.data);
         
         pub2.publish(msg2);
 

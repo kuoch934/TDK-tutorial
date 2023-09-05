@@ -42,14 +42,14 @@ private:
     ros::Subscriber dir_sub;   //map
 };
 
-// 2. node detact  pub : node_point
+// 2. node detect  pub : node_point
 bool detectRisingEdge(bool current) {
     static bool previous = false;
     bool temp = current && !previous;
     previous = current;
     return temp;
 }
-std_msgs::Bool node_detact(){
+std_msgs::Bool node_detect(){
     std_msgs::Bool result;
     if(std_tracker_data[4] == black  && std_tracker_data[10] == black && (std_tracker_data[5] == black || std_tracker_data[9] == black)){
         result.data = false;
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     Tracker tracker(nh);
     ros::Publisher node_pub;   //map
     ros::Publisher Err_pub;    //PID
-    node_pub = nh.advertise<std_msgs::Bool>("node_detact", 10);
+    node_pub = nh.advertise<std_msgs::Bool>("node_detect", 10);
     Err_pub = nh.advertise<geometry_msgs::Twist>("error", 10);
     size_t i;
     error.linear.x=0;
@@ -107,15 +107,15 @@ int main(int argc, char** argv) {
         ros::spinOnce();
         
         tracker.tracker_data_std();
-        node_point = node_detact();
+        node_point = node_detect();
         error_cal();
         //ROS_INFO("hello");
         //ROS_INFO("dir: %d",tracker.dir);
         // for (i = 0; i < 20; ++i){
         //     ROS_INFO("tracker_data[%zu]: %d",i,std_tracker_data[i]);
         // }
-        ROS_INFO("error.linear.x: %f",error.linear.x);
-        ROS_INFO("error.angular.z: %f",error.angular.z);
+        // ROS_INFO("error.linear.x: %f",error.linear.x);
+        // ROS_INFO("error.angular.z: %f",error.angular.z);
 
         node_pub.publish(node_point);
         Err_pub.publish(error);
