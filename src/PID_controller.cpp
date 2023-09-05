@@ -26,16 +26,26 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "PID_controller");
     ros::NodeHandle nh;
+    ros::NodeHandle nh_local("~");
     ros::Subscriber Err_sub = nh.subscribe<geometry_msgs::Twist>("error",10,Err_callback);
     ros::Publisher vel_pub = nh.advertise<geometry_msgs::Twist>("delta_vel",10);
     geometry_msgs::Twist velocity;
-    double v_max=1;
+    double vkp=0,vki=0,vkd=0,wkp=0,wki=0,wkd=0;
+    double v_max,w_max;
+    nh_local.param<double>("/v_max", v_max, 0);
+    nh_local.param<double>("/w_max", w_max, 0);
+    nh.getParam("/vkp",vkp);
+    nh.getParam("/vki",vki);
+    nh.getParam("/vkd",vkd);
+    nh.getParam("/wkp",wkp);
+    nh.getParam("/wki",wki);
+    nh.getParam("/wkd",wkd);
 
     while(ros::ok())
     {   
         ros::spinOnce();
-        velocity.linear.y = -PID_ratio(Err_d,1,0,0);
-        velocity.angular.z = PID_ratio(Err_theta,1,0,0);
+        velocity.linear.y = -v_max*PID_ratio(Err_d,vkp,vki,vkd);
+        velocity.angular.z = w_max*PID_ratio(Err_theta,wkp,wki,wkd);
         vel_pub.publish(velocity);
     }
     return 0;

@@ -4,8 +4,7 @@
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Bool.h>
 
-#define black 1
-#define nonblack 0
+int black = 1,nonblack = 0;
 int8_t std_tracker_data[20],temp[20],weight_array[20] = {2,1,0,-1,-2,-3,0,0,0,-3,-2,-1,0,1,2,3,0,0,0,3};
 geometry_msgs::Twist error;
 std_msgs::Bool node_point;
@@ -93,6 +92,7 @@ void error_cal(){
 int main(int argc, char** argv) {
     ros::init(argc, argv, "data_process");
     ros::NodeHandle nh;
+    ros::NodeHandle nh_local("~");
     Tracker tracker(nh);
     ros::Publisher node_pub;   //map
     ros::Publisher Err_pub;    //PID
@@ -101,7 +101,9 @@ int main(int argc, char** argv) {
     size_t i;
     error.linear.x=0;
     error.angular.z=0;
-
+    
+    nh.getParam("/black",black);
+    nh.getParam("/nonblack",nonblack);
 
     while (ros::ok()) {
         ros::spinOnce();
