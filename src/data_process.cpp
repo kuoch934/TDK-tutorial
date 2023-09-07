@@ -111,13 +111,13 @@ int main(int argc, char** argv) {
         tracker.tracker_data_std();
         node_point = node_detect();
         error_cal();
+        ROS_INFO("black: %d  nonblack: %d",black,nonblack);
         //ROS_INFO("hello");
         //ROS_INFO("dir: %d",tracker.dir);
         // for (i = 0; i < 20; ++i){
         //     ROS_INFO("tracker_data[%zu]: %d",i,std_tracker_data[i]);
         // }
-        // ROS_INFO("error.linear.x: %f",error.linear.x);
-        // ROS_INFO("error.angular.z: %f",error.angular.z);
+        //ROS_INFO("error_d: %f error_w: %f",error.linear.x,error.angular.z);
 
         node_pub.publish(node_point);
         Err_pub.publish(error);
