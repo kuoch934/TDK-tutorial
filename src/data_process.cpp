@@ -4,7 +4,7 @@
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Bool.h>
 
-int black = 1,nonblack = 0;
+int black = 0,nonblack = 1;
 int8_t std_tracker_data[20],temp[20],weight_array[20] = {2,1,0,-1,-2,-3,0,0,0,-3,-2,-1,0,1,2,3,0,0,0,3};
 geometry_msgs::Twist error;
 std_msgs::Bool node_point;
@@ -111,7 +111,7 @@ int main(int argc, char** argv) {
         tracker.tracker_data_std();
         node_point = node_detect();
         error_cal();
-        ROS_INFO("black: %d  nonblack: %d",black,nonblack);
+        // ROS_INFO("black: %d  nonblack: %d",black,nonblack);
         //ROS_INFO("hello");
         //ROS_INFO("dir: %d",tracker.dir);
         // for (i = 0; i < 20; ++i){

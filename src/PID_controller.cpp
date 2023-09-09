@@ -51,12 +51,13 @@ int main(int argc, char **argv)
         ros::spinOnce();
         velocity.linear.y = -v_max*PID_ratio(Err_d,vkp,vki,vkd);
         velocity.angular.z = w_max*PID_ratio(Err_theta,wkp,wki,wkd);
-        ROS_INFO("Err_d: %f  Err_theta: %f",Err_d,Err_theta);
-        ROS_INFO("PID_d: %f  PID_theta: %f",PID_ratio(Err_d,vkp,vki,vkd),PID_ratio(Err_theta,wkp,wki,wkd));
-        ROS_INFO("v_max: %f  vkp: %f  vki: %f  vkd: %f",v_max,vkp,vki,vkd);
-        ROS_INFO("w_max: %f  wkp: %f  wki: %f  wkd: %f",w_max,wkp,wki,wkd);
 
+        // ROS_INFO("Err_d: %f  Err_theta: %f",Err_d,Err_theta);
+        // ROS_INFO("PID_d: %f  PID_theta: %f",PID_ratio(Err_d,vkp,vki,vkd),PID_ratio(Err_theta,wkp,wki,wkd));
+        // ROS_INFO("v_max: %f  vkp: %f  vki: %f  vkd: %f",v_max,vkp,vki,vkd);
+        // ROS_INFO("w_max: %f  wkp: %f  wki: %f  wkd: %f",w_max,wkp,wki,wkd);
         ROS_INFO("linear.y: %f  angular.z: %f",velocity.linear.y,velocity.angular.z);
+
         vel_pub.publish(velocity);
         LoopRate.sleep();
     }
