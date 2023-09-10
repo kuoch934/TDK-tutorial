@@ -1,13 +1,19 @@
 <launch>
     <arg name="black" value="0" />
     <arg name="nonblack" value="1" />
+    <node pkg="rosserial_python" type="serial_node.py" name="arduino_serial_node">
+        <!-- 设置串口名称，根据你的实际情况更改 -->
+        <param name="port" value="/dev/ttyACM0" />
+        <!-- 设置波特率，确保与Arduino代码中的设置一致 -->
+        <param name="baud" value="57600" />
+    </node>
 
     <node name="data_process" pkg="tutorial" type="data_process" output="screen">
         
     </node>
     <node name="PID_controller" pkg="tutorial" type="PID_controller" output="screen">
-        <rosparam file="$(find tutorial)/config/tracker.yaml" command="load" />
-    <!-- </node>
-    <node name="debug" pkg="tutorial" type="debug" output="screen">
+        <rosparam file="$(find tutorial)/config/tracking.yaml" command="load" />
+    </node> 
+    <!-- <node name="debug" pkg="tutorial" type="debug" output="screen">
     </node> -->
 </launch>
