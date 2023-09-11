@@ -81,8 +81,19 @@ void error_cal(){
                     total_Err_B += weight_array[i];
                     counter_B++;
         }}}
-        Err_F = (double) total_Err_F / counter_F;
-        Err_B = (double) total_Err_B / counter_B;
+        if(counter_F == 0){
+            Err_F = (double) total_Err_F;
+        }
+        else{
+            Err_F = (double) total_Err_F / counter_F;
+        }
+        
+        if(counter_B == 0){
+            Err_B = (double) total_Err_B;
+        }
+        else{
+            Err_B = (double) total_Err_B / counter_B;
+        }
         Err_d = (Err_F + Err_B) / 2;
         Err_theta = atan((Err_F - Err_B) / 7);
         error.linear.x = Err_d;
@@ -94,10 +105,15 @@ int main(int argc, char** argv) {
     ros::NodeHandle nh;
     ros::NodeHandle nh_local("~");
     Tracker tracker(nh);
+
+    double span=1;
+    nh.getParam("/span",span);
+
     ros::Publisher node_pub;   //map
     ros::Publisher Err_pub;    //PID
     node_pub = nh.advertise<std_msgs::Bool>("node_detect", 10);
     Err_pub = nh.advertise<geometry_msgs::Twist>("error", 10);
+
     size_t i;
     error.linear.x=0;
     error.angular.z=0;
@@ -121,7 +137,7 @@ int main(int argc, char** argv) {
 
         node_pub.publish(node_point);
         Err_pub.publish(error);
-        ros::Duration(1).sleep();
+        ros::Duration(span).sleep();
     }
 
     return 0;

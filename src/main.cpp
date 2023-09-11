@@ -4,27 +4,36 @@
 geometry_msgs::Twist vel;
 
 void delta_vel_callback(const geometry_msgs::TwistConstPtr& msg){
-    vel.linear.y += msg->linear.y;
-    vel.angular.z += msg->angular.z;
+    vel.linear.y = msg->linear.y;
+    vel.angular.z = msg->angular.z;
 }
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "debug");
+    ros::init(argc, argv, "main");
     ros::NodeHandle nh;
+
+    double span=1;
+    nh.getParam("/span",span);
+
     ros::Publisher pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 10);
     ros::Subscriber sub = nh.subscribe<geometry_msgs::Twist>("delta_vel",10,delta_vel_callback);
-    ros::Rate loop_rate(1);
     
-    vel.linear.x = 1;
-    vel.linear.y = 0;
-    vel.angular.z = 0;
+    double Vx = 0,Vy = 0,w = 0;
     
     while(ros::ok())
     {   
         ros::spinOnce();
+
+        nh.getParam("/Vx",Vx);
+        nh.getParam("/Vy",Vy);
+        nh.getParam("/w",w);
+        vel.linear.x = Vx;
+        vel.linear.y += Vy;
+        vel.angular.z += w;
+        
         pub.publish(vel);
-        loop_rate.sleep();
+        ros::Duration(span).sleep();
     }
     return 0;
 }

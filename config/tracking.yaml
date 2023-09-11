@@ -1,13 +1,30 @@
+# constant
+span: 0.2
+
 # tracker param
+black: 0
+nonblack: 1
+
+# variable
+# cmd_vel
+Vx: 1.0
+Vy: 0.0
+w: 0.0
+
+# realspeed
+rVx: 0.0
+rVy: 0.0
+rw: 0.0
+
 # transmission fix
-v_max: 2
+v_max: 0.2
 
 vkp: 1.0
 vki: 0.0
 vkd: 0.0
 
 # rotation fix
-w_max: 2
+w_max: 0.2
 
 wkp: 1.0
 wki: 0.0

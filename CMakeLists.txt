@@ -164,6 +164,9 @@ target_link_libraries(PID_controller ${catkin_LIBRARIES})
 add_executable(debug src/debug.cpp)
 target_link_libraries(debug ${catkin_LIBRARIES})
 
+add_executable(main src/main.cpp)
+target_link_libraries(main ${catkin_LIBRARIES})
+
 # add_executable(odometry src/odometry.cpp)
 # target_link_libraries(odometry ${catkin_LIBRARIES})
 
