@@ -13,7 +13,7 @@ class Tracker {
 public:
     Tracker(ros::NodeHandle& node_handle) : nh(node_handle) {
         data_sub = nh.subscribe<std_msgs::Int8MultiArray>("tracker_data", 10, &Tracker::tracker_callback, this);
-        dir_sub = nh.subscribe<std_msgs::Int8>("dir", 10, &Tracker::dir_callback, this);
+        dir_sub = nh.subscribe<std_msgs::Int8>("cmd_ori", 10, &Tracker::dir_callback, this);
     }
     std::vector<int8_t> tracker_data;
     int dir=0;
@@ -31,7 +31,12 @@ public:
             temp[i] = tracker_data[i];}
         // 放temp就修好了 '_'
         for (i = 0; i < 4; ++i){for(size_t j= 0; j < 5; ++j){
-            std_tracker_data[(i+dir)%4*5+j]=temp[i%4*5+j];
+            if(i-dir < 0){
+                std_tracker_data[(i-dir+4)%4*5+j]=temp[i%4*5+j];
+            }
+            else{
+                std_tracker_data[(i-dir)%4*5+j]=temp[i%4*5+j];
+            }
         }}
     }
     
@@ -48,6 +53,13 @@ bool detectRisingEdge(bool current) {
     previous = current;
     return temp;
 }
+bool detectfallingEdge(bool current) {
+    static bool previous = false;
+    bool temp = !current && previous;
+    previous = current;
+    return temp;
+}
+
 std_msgs::Bool node_detect(){
     std_msgs::Bool result;
     if(std_tracker_data[4] == black  && std_tracker_data[10] == black && (std_tracker_data[5] == black || std_tracker_data[9] == black)){
@@ -58,10 +70,18 @@ std_msgs::Bool node_detect(){
         result.data = false;
         return result;
     }
-    if(detectRisingEdge((bool)std_tracker_data[8]) && std_tracker_data[7] == black || detectRisingEdge((bool)std_tracker_data[16] && std_tracker_data[17] == black)){
+    if(std_tracker_data[16] == black && std_tracker_data[17] == black && std_tracker_data[12] == black){
         result.data = true;
         return result;
     }
+    if(std_tracker_data[8] == black && std_tracker_data[7] == black && std_tracker_data[12] == black){
+        result.data = true;
+        return result;
+    }
+    // else if(detectfallingEdge((bool)std_tracker_data[8]) && std_tracker_data[7] == nonblack || detectfallingEdge((bool)std_tracker_data[16] && std_tracker_data[17] == nonblack)){
+    //     result.data = true;
+    //     return result;
+    // }
     result.data = false;
     return result;
 }
@@ -134,7 +154,7 @@ int main(int argc, char** argv) {
         //     ROS_INFO("tracker_data[%zu]: %d",i,std_tracker_data[i]);
         // }
         //ROS_INFO("error_d: %f error_w: %f",error.linear.x,error.angular.z);
-
+        ROS_INFO("node detect: %d",node_point.data);
         node_pub.publish(node_point);
         Err_pub.publish(error);
         ros::Duration(span).sleep();
