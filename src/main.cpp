@@ -3,6 +3,7 @@
 #include "std_msgs/Int8.h"
 #include "std_msgs/Bool.h"
 #include "math.h"
+#include "std_msgs_Int8.h"
 
 geometry_msgs::Twist vel,det_vel;
 double V = 0,dV = 0,Vx = 0, Vy = 0, w = 0;
@@ -36,8 +37,9 @@ int main(int argc, char **argv)
     ros::Subscriber sub = nh.subscribe<geometry_msgs::Twist>("delta_vel",10,delta_vel_callback);
     ros::Subscriber dir_sub = nh.subscribe<std_msgs::Int8>("cmd_ori", 10, dir_callback);
     ros::Subscriber sub1 = nh.subscribe<std_msgs::Bool>("node_detect",10,detect_callback);
+    ros::Publisher pub1 = nh.advertise<std_msgs::Int8>("cmd_script", 10);
     
-    
+    std_msgs::Int8 script;
     
     
 
@@ -49,18 +51,33 @@ int main(int argc, char **argv)
         nh.getParam("/dV",dV);
         nh.getParam("/w",w);
         nh.getParam("/dir",dir);
-        if(node){
-            nh.setParam("/dir",2);
-        }
-
+        // if(node){
+        //     nh.setParam("/dir",2);
+        // }
         Vx = V*cos(((double)dir)*0.5*3.1415) - det_vel.linear.y*sin(((double)dir)*0.5*3.1415);
         Vy = V*sin(((double)dir)*0.5*3.1415) + det_vel.linear.y*cos(((double)dir)*0.5*3.1415);
-        vel.linear.x = Vx;
-        vel.linear.y = Vy;
-        vel.angular.z = det_vel.angular.z;
-        ROS_INFO("dir: %d ",dir);
-        ROS_INFO("dv: %f  dtheta: %f",det_vel.linear.y,det_vel.angular.z);
-        ROS_INFO("Vx: %f  Vy: %f  w: %f",vel.linear.x,vel.linear.y,vel.angular.z);
+
+        
+        if(dir == 6){
+            script = dir;
+            pub1.publish(script);
+        }
+        else{
+            if(dir == -1){
+            vel.linear.x = 0;
+            vel.linear.y = 0;
+            vel.angular.z = 0;
+            }
+            else{
+                vel.linear.x = Vx;
+                vel.linear.y = Vy;
+                vel.angular.z = det_vel.angular.z;
+            }
+        }
+        
+        // ROS_INFO("dir: %d ",dir);
+        // ROS_INFO("dv: %f  dtheta: %f",det_vel.linear.y,det_vel.angular.z);
+        // ROS_INFO("Vx: %f  Vy: %f  w: %f",vel.linear.x,vel.linear.y,vel.angular.z);
 
         pub.publish(vel);
         ros::Duration(span).sleep();

@@ -5,7 +5,11 @@
 #include <std_msgs/Bool.h>
 
 int black = 0,nonblack = 1;
-int8_t std_tracker_data[20],temp[20],weight_array[20] = {2,1,0,-1,-2,-3,0,0,0,-3,-2,-1,0,1,2,3,0,0,0,3};
+int dir=0;
+
+int8_t std_tracker_data[20],temp[20];
+int8_t weight_array[20] = {2,1,0,-1,-2,-3,0,0,0,-3,-2,-1,0,1,2,3,0,0,0,3};
+int8_t corrdinate[20][2] = {{3,-2},{3,-1},{3,0},{3,1},{3,2}, {2,3},{1,3},{0,3},{-1,3},{-2,3}, {-3,2},{-3,1},{-3,0},{-3,-1},{-3,-2}, {-2,-3},{-1,3-},{0,-3},{1,-3},{2,-3}};
 geometry_msgs::Twist error;
 std_msgs::Bool node_point;
 // 1. tracker data standardrize  sub : tracker_data, dir
@@ -16,7 +20,7 @@ public:
         dir_sub = nh.subscribe<std_msgs::Int8>("cmd_ori", 10, &Tracker::dir_callback, this);
     }
     std::vector<int8_t> tracker_data;
-    int dir=0;
+    
 
     void tracker_callback(const std_msgs::Int8MultiArray::ConstPtr& msg) {
          tracker_data = msg->data;
@@ -32,10 +36,10 @@ public:
         // 放temp就修好了 '_'
         for (i = 0; i < 4; ++i){for(size_t j= 0; j < 5; ++j){
             if(i-dir < 0){
-                std_tracker_data[(i-dir+4)%4*5+j]=temp[i%4*5+j];
+                std_tracker_data[(i-dir+4)%4*5+j]=temp[i*5+j];
             }
             else{
-                std_tracker_data[(i-dir)%4*5+j]=temp[i%4*5+j];
+                std_tracker_data[(i-dir)%4*5+j]=temp[i*5+j];
             }
         }}
     }
@@ -143,10 +147,17 @@ int main(int argc, char** argv) {
 
     while (ros::ok()) {
         ros::spinOnce();
+        //nh.getParam("/dir",dir);
         
-        tracker.tracker_data_std();
-        node_point = node_detect();
-        error_cal();
+        if(dir >= 0 && dir < 4){
+            tracker.tracker_data_std();
+            node_point = node_detect();
+            error_cal();
+            ROS_INFO("node detect: %d",node_point.data);
+            node_pub.publish(node_point);
+            Err_pub.publish(error);
+        }
+        
         // ROS_INFO("black: %d  nonblack: %d",black,nonblack);
         //ROS_INFO("hello");
         //ROS_INFO("dir: %d",tracker.dir);
@@ -154,9 +165,7 @@ int main(int argc, char** argv) {
         //     ROS_INFO("tracker_data[%zu]: %d",i,std_tracker_data[i]);
         // }
         //ROS_INFO("error_d: %f error_w: %f",error.linear.x,error.angular.z);
-        ROS_INFO("node detect: %d",node_point.data);
-        node_pub.publish(node_point);
-        Err_pub.publish(error);
+        
         ros::Duration(span).sleep();
     }
 

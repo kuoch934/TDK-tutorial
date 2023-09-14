@@ -37,25 +37,22 @@ int main(int argc, char **argv)
     
     geometry_msgs::Twist velocity;
     double vkp = 0,vki = 0,vkd = 0,wkp = 0,wki = 0,wkd = 0;
-    double v_max = 0,w_max = 0;
     
 
     while(ros::ok())
     {   
         ros::spinOnce();
 
-        nh.getParam("v_max", v_max);
         nh.getParam("vkp",vkp);
         nh.getParam("vki",vki);
         nh.getParam("vkd",vkd);
 
-        nh.getParam("w_max", w_max);
         nh.getParam("wkp",wkp);
         nh.getParam("wki",wki);
         nh.getParam("wkd",wkd);
 
-        velocity.linear.y = PID_ratio(Err_d,vkp,vki,vkd);
-        velocity.angular.z = -PID_ratio(Err_theta,wkp,wki,wkd);
+        velocity.linear.y = -PID_ratio(Err_d,vkp,vki,vkd);
+        velocity.angular.z = PID_ratio(Err_theta,wkp,wki,wkd);
 
         // ROS_INFO("Err_d: %f  Err_theta: %f",Err_d,Err_theta);
         // ROS_INFO("PID_d: %f  PID_theta: %f",PID_ratio(Err_d,vkp,vki,vkd),PID_ratio(Err_theta,wkp,wki,wkd));
