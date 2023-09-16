@@ -152,23 +152,14 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(tutorial src/tutorial.cpp)
-target_link_libraries(tutorial ${catkin_LIBRARIES})
-
-add_executable(data_process src/data_process.cpp)
-target_link_libraries(data_process ${catkin_LIBRARIES})
-
-add_executable(PID_controller src/PID_controller.cpp)
-target_link_libraries(PID_controller ${catkin_LIBRARIES})
-
 add_executable(debug src/debug.cpp)
 target_link_libraries(debug ${catkin_LIBRARIES})
 
-add_executable(main src/main.cpp)
-target_link_libraries(main ${catkin_LIBRARIES})
+add_executable(navi_tracking src/navi_tracking.cpp)
+target_link_libraries(navi_tracking ${catkin_LIBRARIES})
 
-# add_executable(odometry src/odometry.cpp)
-# target_link_libraries(odometry ${catkin_LIBRARIES})
+add_executable(comm_vel src/comm_vel.cpp)
+target_link_libraries(comm_vel ${catkin_LIBRARIES})
 
 
 #############

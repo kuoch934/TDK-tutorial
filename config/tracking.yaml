@@ -7,25 +7,19 @@ nonblack: 1
 
 # variable
 # cmd_vel
-dir: 0
+ori: 0
 
-V: 5.0
-dV: 0.0
-w: 0.0
-
-# realspeed
-rVx: 0.0
-rVy: 0.0
-rw: 0.0
+V: 10.0
+vel_limit: 3.0
 
 # transmission fix
 
 vkp: 1
 vki: 0.0
-vkd: 0.03
+vkd: 0.0
 
 # rotation fix
 
 wkp: 0.05
 wki: 0.0
-wkd: 0.003
+wkd: 0.00

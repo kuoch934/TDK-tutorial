@@ -6,7 +6,7 @@
 
 std_msgs::Bool node_point;
 
-void detact_callback(const std_msgs::Bool::ConstPtr& msg){
+void detect_callback(const std_msgs::Bool::ConstPtr& msg){
     node_point.data = msg->data;
 }
 
@@ -16,7 +16,7 @@ int main(int argc, char **argv)
     ros::NodeHandle nh;
     ros::Publisher pub1 = nh.advertise<std_msgs::Int8>("dir", 10);
     ros::Publisher pub2 = nh.advertise<std_msgs::Int8MultiArray>("tracker_data", 10);
-    ros::Subscriber sub1 = nh.subscribe<std_msgs::Bool>("node_detect",10,detact_callback);
+    ros::Subscriber sub1 = nh.subscribe<std_msgs::Bool>("node_detect",10,detect_callback);
     ros::Rate loop_rate(1);
     
     int number = 0;
